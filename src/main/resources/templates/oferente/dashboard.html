@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dashboard — Oferente</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Oferente — Dashboard</h1>
+  <p class="page-subtitle">Administra tus habilidades y tu CV.</p>
+
+  <div class="card">
+    <p class="mb-1">
+      Bienvenido, <strong th:text="${oferente.nombreCompleto}">Nombre</strong>
+    </p>
+    <p class="text-muted mb-3" th:text="${oferente.correoElectronico}">correo</p>
+
+    <div class="dashboard-actions">
+      <a class="btn btn-primary btn-lg"  th:href="@{/oferente/habilidades}">Mis habilidades</a>
+      <a class="btn btn-outline btn-lg"  th:href="@{/oferente/cv}">Mi CV</a>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

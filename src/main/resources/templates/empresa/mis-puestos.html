@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Mis Puestos — Empresa</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Mis puestos</h1>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+  <div class="mb-2">
+    <a class="btn btn-primary" th:href="@{/empresa/puestos/nuevo}">&#43; Publicar puesto</a>
+  </div>
+
+  <p th:if="${puestos.isEmpty()}" class="text-muted">
+    Aún no has publicado ningún puesto.
+    <a th:href="@{/empresa/puestos/nuevo}">Publica tu primer puesto</a>.
+  </p>
+
+  <div class="table-wrapper" th:unless="${puestos.isEmpty()}">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Descripción</th>
+          <th>Salario</th>
+          <th>Tipo</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${puestos}">
+          <td th:text="${p.id}">1</td>
+          <td th:text="${p.descripcion}">Descripción</td>
+          <td>&#8353; <span th:text="${p.salarioOfrecido != null ? #numbers.formatDecimal(p.salarioOfrecido, 1, 'COMMA', 2, 'POINT') : '—'}">0.00</span></td>
+          <td>
+            <span th:text="${p.esPublico ? 'Público' : 'Privado'}"></span>
+          </td>
+          <td>
+            <span th:if="${p.activo}"  class="badge badge-success">Si</span>
+            <span th:unless="${p.activo}" class="badge badge-danger">No</span>
+          </td>
+          <td>
+            <div class="btn-group">
+              <!-- Desactivar (only if active) -->
+              <form th:if="${p.activo}" method="post"
+                    th:action="@{/empresa/puestos/{id}/desactivar(id=${p.id})}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button class="btn btn-danger btn-sm" type="submit">Desactivar</button>
+              </form>
+
+              <!-- Buscar candidatos -->
+              <a class="btn btn-primary btn-sm"
+                 th:href="@{/empresa/candidatos/buscar(puestoId=${p.id})}">
+                Buscar candidatos
+              </a>
+
+              <!-- Editar -->
+              <a class="btn btn-secondary btn-sm"
+                 th:href="@{/empresa/puestos/{id}/editar(id=${p.id})}">
+                Editar
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(find /mnt/c/Users/admin/Documents/Github/ProyectoProgra4/src/main/resources/static -type f -name *.js)",
+      "Bash(grep -E \"\\\\.html$\")",
+      "Bash(xargs grep:*)"
+    ]
+  }
+}

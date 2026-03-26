@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<!--
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  FRAGMENT: nav                                                   │
+  │  Usage in templates: <nav th:replace="~{layout :: nav}"></nav>  │
+  └─────────────────────────────────────────────────────────────────┘
+-->
+<nav class="navbar" th:fragment="nav">
+
+  <a class="nav-brand" th:href="@{/}">BolsaEmpleo</a>
+
+  <div class="nav-links">
+
+    <!-- Always visible -->
+    <a th:href="@{/puestos/buscar}">Buscar puestos</a>
+
+    <!-- Anonymous only -->
+    <span sec:authorize="isAnonymous()">
+      <a th:href="@{/registro/empresa}">Registro Empresa</a>
+      <a th:href="@{/registro/oferente}">Registro Oferente</a>
+    </span>
+
+    <!-- Empresa role -->
+    <span sec:authorize="hasRole('EMPRESA')">
+      <a th:href="@{/empresa/dashboard}">Dashboard</a>
+      <a th:href="@{/empresa/puestos}">Mis puestos</a>
+      <a th:href="@{/empresa/puestos/nuevo}">Publicar puesto</a>
+    </span>
+
+    <!-- Oferente role -->
+    <span sec:authorize="hasRole('OFERENTE')">
+      <a th:href="@{/oferente/dashboard}">Dashboard</a>
+      <a th:href="@{/oferente/habilidades}">Mis habilidades</a>
+      <a th:href="@{/oferente/cv}">Mi CV</a>
+    </span>
+
+    <!-- Admin role -->
+    <span sec:authorize="hasRole('ADMIN')">
+      <a th:href="@{/admin/dashboard}">Dashboard</a>
+      <a th:href="@{/admin/empresas/pendientes}">Empresas pendientes</a>
+      <a th:href="@{/admin/oferentes/pendientes}">Oferentes pendientes</a>
+      <a th:href="@{/admin/caracteristicas}">Características</a>
+      <a th:href="@{/admin/reportes}">Reportes</a>
+    </span>
+
+  </div>
+
+  <div class="nav-right">
+    <!-- Authenticated: show username + logout -->
+    <span sec:authorize="isAuthenticated()">
+      <span class="nav-user" sec:authentication="name"></span>
+      <a class="btn-logout" th:href="@{/logout}">Salir</a>
+    </span>
+    <!-- Anonymous: show login button -->
+    <a sec:authorize="isAnonymous()" class="btn-login" th:href="@{/login}">Login</a>
+  </div>
+
+</nav>
+
+<!--
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  FRAGMENT: footer                                                │
+  └─────────────────────────────────────────────────────────────────┘
+-->
+<footer class="site-footer" th:fragment="footer">
+  <span><strong>Bolsa de Empleo</strong> — Total Soft Inc.</span>
+  <span>Contacto: info@bolsaempleo.local</span>
+  <span>Créditos: Equipo de desarrollo</span>
+</footer>
+
+</body>
+</html>

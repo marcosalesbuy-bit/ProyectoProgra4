@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Candidatos — Empresa</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Candidatos para el puesto</h1>
+  <p class="page-subtitle">
+    Puesto: <strong th:text="${puesto.descripcion}">Descripción</strong>
+  </p>
+
+  <p th:if="${resultados.isEmpty()}" class="alert alert-info">
+    No se encontraron candidatos que cumplan al menos un requisito de este puesto.
+  </p>
+
+  <div class="table-wrapper" th:unless="${resultados.isEmpty()}">
+    <table>
+      <thead>
+        <tr>
+          <th>Oferente</th>
+          <th>Requisitos cumplidos</th>
+          <th>% Coincidencia</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="r : ${resultados}">
+          <td th:text="${r.oferente.nombreCompleto}">Nombre</td>
+          <td th:text="${r.requisitosFormateados}">0/0</td>
+          <td>
+            <span th:class="${r.porcentajeCoincidencia >= 75 ? 'pct-high' :
+                               (r.porcentajeCoincidencia >= 40 ? 'pct-medium' : 'pct-low')}"
+                  th:text="${r.porcentajeFormateado}">0%</span>
+          </td>
+          <td>
+            <a class="btn btn-primary btn-sm"
+               th:href="@{/empresa/candidatos/{id}(id=${r.oferente.id})}">
+              Ver detalle
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-2">
+    <a class="btn btn-secondary" th:href="@{/empresa/puestos}">Volver</a>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

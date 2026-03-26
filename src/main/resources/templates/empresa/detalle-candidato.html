@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Detalle de Candidato — Empresa</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Detalle de oferente</h1>
+
+  <!-- Personal info -->
+  <div class="card mb-2">
+    <h2 style="color:var(--primary);margin-bottom:1rem"
+        th:text="${oferente.nombreCompleto}">Nombre</h2>
+
+    <div class="candidate-info">
+      <p><strong>Identificación:</strong> <span th:text="${oferente.identificacion}"></span></p>
+      <p><strong>Email:</strong> <span th:text="${oferente.correoElectronico}"></span></p>
+      <p><strong>Teléfono:</strong> <span th:text="${oferente.telefono ?: '—'}"></span></p>
+      <p><strong>Residencia:</strong> <span th:text="${oferente.lugarResidencia ?: '—'}"></span></p>
+      <p><strong>Nacionalidad:</strong> <span th:text="${oferente.nacionalidad ?: '—'}"></span></p>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="card mb-2">
+    <h3 style="color:var(--primary);margin-bottom:1rem">Habilidades</h3>
+
+    <p th:if="${habilidades.isEmpty()}" class="text-muted">
+      Este oferente no ha registrado habilidades.
+    </p>
+
+    <div class="table-wrapper" th:unless="${habilidades.isEmpty()}">
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Nivel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="h : ${habilidades}">
+            <td th:text="${h.caracteristica.ruta}">Característica</td>
+            <td>
+              <span th:text="${h.nivel}">1</span>
+              <span class="text-muted">/ 5</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CV -->
+  <div class="card">
+    <h3 style="color:var(--primary);margin-bottom:.75rem">Currículum Vitae</h3>
+    <div th:if="${oferente.cvPath != null}">
+      <a class="btn btn-success"
+         th:href="@{/empresa/candidatos/{id}/cv(id=${oferente.id})}"
+         target="_blank">
+        &#128196; Ver CV (PDF)
+      </a>
+    </div>
+    <p th:unless="${oferente.cvPath != null}" class="text-muted">
+      Este oferente aún no ha subido su CV.
+    </p>
+  </div>
+
+  <div class="mt-2">
+    <a class="btn btn-secondary" th:href="@{/empresa/puestos}">Volver a Mis Puestos</a>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

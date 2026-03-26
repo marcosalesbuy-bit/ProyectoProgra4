@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bolsa de Empleo</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Bolsa de Empleo</h1>
+  <p class="page-subtitle">Últimos 5 puestos públicos</p>
+
+  <!-- Empty state -->
+  <p th:if="${puestos.isEmpty()}" class="text-muted">
+    No hay puestos públicos disponibles en este momento.
+  </p>
+
+  <!-- Puesto cards grid -->
+  <div class="puestos-grid" th:unless="${puestos.isEmpty()}">
+    <div class="puesto-card" th:each="p : ${puestos}">
+
+      <div class="empresa-nombre" th:text="${p.empresa.nombre}">Empresa</div>
+      <div class="puesto-desc"    th:text="${p.descripcion}">Descripción del puesto</div>
+      <div class="puesto-salario">
+        &#8353; <span th:text="${p.salarioOfrecido != null ? #numbers.formatDecimal(p.salarioOfrecido, 1, 'COMMA', 2, 'POINT') : '—'}">0.00</span>
+      </div>
+
+      <a th:href="@{/puestos/buscar}" class="btn btn-primary btn-sm">Ver detalle</a>
+
+      <!-- Pure-CSS hover popup -->
+      <div class="puesto-detalle">
+        <strong th:text="${p.descripcion}">Puesto</strong>
+        <p th:if="${p.requisitos.isEmpty()}" class="text-muted">Sin requisitos especificados.</p>
+        <ul th:unless="${p.requisitos.isEmpty()}">
+          <li th:each="r : ${p.requisitos}">
+            <span th:text="${r.caracteristica.ruta}">Característica</span>
+            (nivel <span th:text="${r.nivelRequerido}">1</span>)
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

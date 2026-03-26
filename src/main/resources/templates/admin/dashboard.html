@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dashboard — Administrador</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Administrador</h1>
+  <p class="page-subtitle">Aprobaciones, catálogo de características y reportes.</p>
+
+  <div class="card">
+    <div class="dashboard-actions">
+      <a class="btn btn-primary btn-lg"
+         th:href="@{/admin/empresas/pendientes}">Empresas pendientes</a>
+      <a class="btn btn-primary btn-lg"
+         th:href="@{/admin/oferentes/pendientes}">Oferentes pendientes</a>
+      <a class="btn btn-outline btn-lg"
+         th:href="@{/admin/caracteristicas}">Características</a>
+      <a class="btn btn-outline btn-lg"
+         th:href="@{/admin/reportes}">Reportes</a>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

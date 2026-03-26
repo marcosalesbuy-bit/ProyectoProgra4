@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Mi CV — Oferente</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main style="max-width:600px">
+  <h1 class="page-title">Mi CV</h1>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+  <!-- Current CV state -->
+  <div class="card mb-2">
+    <h3 style="color:var(--primary);margin-bottom:.75rem">CV actual</h3>
+    <div th:if="${oferente.cvPath != null}">
+      <p class="mb-2 text-muted">Tu currículum ha sido subido correctamente.</p>
+      <a class="btn btn-success"
+         th:href="@{'/' + ${oferente.cvPath}}"
+         target="_blank">
+        &#128196; Ver mi CV (PDF)
+      </a>
+    </div>
+    <p th:unless="${oferente.cvPath != null}" class="text-muted">
+      Aún no has subido tu CV. Usa el formulario de abajo para subirlo.
+    </p>
+  </div>
+
+  <!-- Upload form -->
+  <div class="card">
+    <h3 style="color:var(--primary);margin-bottom:.75rem">
+      Subir <span th:text="${oferente.cvPath != null ? 'nuevo ' : ''}"></span>CV (PDF)
+    </h3>
+    <form method="post"
+          th:action="@{/oferente/cv/subir}"
+          enctype="multipart/form-data">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+      <div class="form-group">
+        <label>Seleccionar archivo PDF</label>
+        <input class="form-control" type="file" name="cvFile" accept=".pdf" required/>
+        <span class="text-muted" style="font-size:.82rem">Máximo 10 MB. Solo archivos .pdf</span>
+      </div>
+
+      <div class="btn-group mt-2">
+        <button class="btn btn-primary" type="submit">Subir CV</button>
+        <a class="btn btn-secondary" th:href="@{/oferente/dashboard}">Volver</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

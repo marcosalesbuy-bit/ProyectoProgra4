@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Buscar Puestos — Bolsa de Empleo</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Buscar puestos por características</h1>
+
+  <div class="card mb-2">
+    <form method="post" th:action="@{/puestos/buscar}">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+      <!-- Characteristic tree — rendered recursively using 3 levels (root → child → grandchild) -->
+      <div class="tree tree-root">
+        <div class="tree-node" th:each="raiz : ${raices}">
+          <label class="tree-label">
+            <input type="checkbox" name="caracteristicaIds" th:value="${raiz.id}"
+                   th:checked="${seleccionados != null and seleccionados.contains(raiz.id)}"/>
+            <strong th:text="${raiz.nombre}">Categoría raíz</strong>
+          </label>
+
+          <div class="tree-children" th:unless="${raiz.hijos.isEmpty()}">
+            <div class="tree-node" th:each="hijo : ${raiz.hijos}">
+              <label class="tree-label">
+                <input type="checkbox" name="caracteristicaIds" th:value="${hijo.id}"
+                       th:checked="${seleccionados != null and seleccionados.contains(hijo.id)}"/>
+                <span th:text="${hijo.nombre}">Hijo</span>
+              </label>
+
+              <div class="tree-children" th:unless="${hijo.hijos.isEmpty()}">
+                <div class="tree-node" th:each="nieto : ${hijo.hijos}">
+                  <label class="tree-label">
+                    <input type="checkbox" name="caracteristicaIds" th:value="${nieto.id}"
+                           th:checked="${seleccionados != null and seleccionados.contains(nieto.id)}"/>
+                    <span th:text="${nieto.nombre}">Nieto</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group mt-2">
+        <button class="btn btn-primary" type="submit">Buscar</button>
+        <a class="btn btn-secondary" th:href="@{/puestos/buscar}">Limpiar</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results -->
+  <section class="results-section" th:if="${resultados != null}">
+    <h3>Resultados
+      <span class="text-muted" th:if="${resultados.isEmpty()}">— sin coincidencias</span>
+    </h3>
+
+    <p th:if="${resultados.isEmpty()}" class="text-muted">
+      No se encontraron puestos con las características seleccionadas.
+    </p>
+
+    <div class="puestos-grid" th:unless="${resultados.isEmpty()}">
+      <div class="puesto-card" th:each="p : ${resultados}">
+        <div class="empresa-nombre" th:text="${p.empresa.nombre}">Empresa</div>
+        <div class="puesto-desc"    th:text="${p.descripcion}">Descripción</div>
+        <div class="puesto-salario">
+          &#8353; <span th:text="${p.salarioOfrecido != null ? #numbers.formatDecimal(p.salarioOfrecido, 1, 'COMMA', 2, 'POINT') : '—'}">0.00</span>
+        </div>
+        <div class="puesto-detalle">
+          <strong>Características requeridas:</strong>
+          <ul>
+            <li th:each="r : ${p.requisitos}">
+              <span th:text="${r.caracteristica.ruta}">Característica</span>
+              — nivel <span th:text="${r.nivelRequerido}">1</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dashboard — Empresa</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Empresa — Dashboard</h1>
+  <p class="page-subtitle">
+    Desde aquí podéis administrar tus puestos y buscar candidatos.
+  </p>
+
+  <div class="card">
+    <p class="mb-2">
+      Bienvenido, <strong th:text="${empresa.nombre}">Empresa</strong>
+    </p>
+    <p class="text-muted mb-3"
+       th:if="${empresa.localizacion != null}"
+       th:text="${empresa.localizacion}">Localización</p>
+
+    <div class="dashboard-actions">
+      <a class="btn btn-primary btn-lg" th:href="@{/empresa/puestos}">Ver mis puestos</a>
+      <a class="btn btn-outline btn-lg" th:href="@{/empresa/puestos/nuevo}">Publicar nuevo puesto</a>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Mis Habilidades — Oferente</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Mis habilidades</h1>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+  <div class="split-layout">
+
+    <!-- ── Left: current skills ──────────────────────────────────────── -->
+    <div>
+      <div class="panel">
+        <h3>Mis habilidades registradas</h3>
+
+        <p th:if="${habilidades.isEmpty()}" class="text-muted">
+          Aún no has registrado habilidades. Usa el panel derecho para agregar.
+        </p>
+
+        <div class="table-wrapper" th:unless="${habilidades.isEmpty()}">
+          <table>
+            <thead>
+              <tr>
+                <th>Característica</th>
+                <th>Nivel</th>
+                <th>Ruta</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="h : ${habilidades}">
+                <td><strong th:text="${h.caracteristica.nombre}">Nombre</strong></td>
+                <td>
+                  <span th:text="${h.nivel}">1</span>
+                  <span class="text-muted">/ 5</span>
+                </td>
+                <td class="text-muted" th:text="${h.caracteristica.ruta}">Ruta</td>
+                <td>
+                  <form method="post"
+                        th:action="@{/oferente/habilidades/{cid}/eliminar(cid=${h.caracteristica.id})}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button class="btn btn-danger btn-sm" type="submit">Eliminar</button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right: add skill (tree navigation) ────────────────────────── -->
+    <div>
+      <div class="panel">
+        <h3>Agregar Habilidad</h3>
+
+        <!-- Breadcrumb / ruta actual -->
+        <div class="breadcrumb mb-2">
+          <a th:href="@{/oferente/habilidades}">Raíces</a>
+          <span th:if="${actual != null}">
+            <span class="breadcrumb-sep">/</span>
+            <span th:text="${actual.ruta}"></span>
+          </span>
+        </div>
+
+        <!-- Children for navigation -->
+        <div th:if="${!hijos.isEmpty()}">
+          <p class="text-muted mb-1">
+            Subcategorías de
+            <strong th:text="${actual != null ? actual.nombre : 'raíz'}">raíz</strong>:
+          </p>
+          <div class="cat-list">
+            <div class="cat-item" th:each="h : ${hijos}">
+              <span class="cat-item-name" th:text="${h.nombre}">Hijo</span>
+              <a class="btn btn-primary btn-sm"
+                 th:href="@{/oferente/habilidades(actualid=${h.id})}">Entrar</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add form: shown only when inside a category -->
+        <div th:if="${actual != null}">
+          <hr class="divider"/>
+          <p class="mb-1">
+            Agregar: <strong th:text="${actual.nombre}"></strong>
+          </p>
+          <form method="post" th:action="@{/oferente/habilidades/agregar}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="hidden" name="caracteristicaId" th:value="${actual.id}"/>
+
+            <div class="form-group">
+              <label>Nivel (1–5)</label>
+              <input class="form-control" type="number" name="nivel"
+                     min="1" max="5" value="1" required/>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Agregar</button>
+          </form>
+        </div>
+
+        <p th:if="${actual == null and hijos.isEmpty()}" class="text-muted">
+          No hay categorías disponibles. El administrador debe crearlas.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- end split-layout -->
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

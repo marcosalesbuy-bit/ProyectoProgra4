@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Empresas Pendientes — Admin</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{layout :: nav}"></nav>
+
+<main>
+  <h1 class="page-title">Empresas pendientes</h1>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+  <p th:if="${empresas.isEmpty()}" class="alert alert-info">
+    No hay empresas pendientes de aprobación.
+  </p>
+
+  <div class="table-wrapper" th:unless="${empresas.isEmpty()}">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario (correo)</th>
+          <th>Nombre</th>
+          <th>Localización</th>
+          <th>Teléfono</th>
+          <th>Fecha de registro</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="e : ${empresas}">
+          <td th:text="${e.correoElectronico}">correo</td>
+          <td><strong th:text="${e.nombre}">nombre</strong></td>
+          <td th:text="${e.localizacion ?: '—'}">loc</td>
+          <td th:text="${e.telefono ?: '—'}">tel</td>
+          <td th:text="${#temporals.format(e.fechaRegistro, 'dd/MM/yyyy')}">fecha</td>
+          <td>
+            <form method="post"
+                  th:action="@{/admin/empresas/{id}/aprobar(id=${e.id})}">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              <button class="btn btn-success btn-sm" type="submit">
+                Aprobar y generar clave
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-2">
+    <a class="btn btn-secondary" th:href="@{/admin/dashboard}">Volver</a>
+  </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>
